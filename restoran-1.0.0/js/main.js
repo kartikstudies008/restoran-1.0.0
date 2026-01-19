@@ -10,11 +10,9 @@
         }, 1);
     };
     spinner();
-    
-    
-    // Initiate the wowjs
-    new WOW().init();
 
+    // Initiate wowjs
+    new WOW().init();
 
     // Sticky Navbar
     $(window).scroll(function () {
@@ -24,37 +22,35 @@
             $('.navbar').removeClass('sticky-top shadow-sm');
         }
     });
-    
-    
-    // Dropdown on mouse hover
+
+    // Dropdown hover
     const $dropdown = $(".dropdown");
     const $dropdownToggle = $(".dropdown-toggle");
     const $dropdownMenu = $(".dropdown-menu");
     const showClass = "show";
-    
-    $(window).on("load resize", function() {
+
+    $(window).on("load resize", function () {
         if (this.matchMedia("(min-width: 992px)").matches) {
             $dropdown.hover(
-            function() {
-                const $this = $(this);
-                $this.addClass(showClass);
-                $this.find($dropdownToggle).attr("aria-expanded", "true");
-                $this.find($dropdownMenu).addClass(showClass);
-            },
-            function() {
-                const $this = $(this);
-                $this.removeClass(showClass);
-                $this.find($dropdownToggle).attr("aria-expanded", "false");
-                $this.find($dropdownMenu).removeClass(showClass);
-            }
+                function () {
+                    const $this = $(this);
+                    $this.addClass(showClass);
+                    $this.find($dropdownToggle).attr("aria-expanded", "true");
+                    $this.find($dropdownMenu).addClass(showClass);
+                },
+                function () {
+                    const $this = $(this);
+                    $this.removeClass(showClass);
+                    $this.find($dropdownToggle).attr("aria-expanded", "false");
+                    $this.find($dropdownMenu).removeClass(showClass);
+                }
             );
         } else {
             $dropdown.off("mouseenter mouseleave");
         }
     });
-    
-    
-    // Back to top button
+
+    // Back to top
     $(window).scroll(function () {
         if ($(this).scrollTop() > 300) {
             $('.back-to-top').fadeIn('slow');
@@ -62,18 +58,17 @@
             $('.back-to-top').fadeOut('slow');
         }
     });
+
     $('.back-to-top').click(function () {
-        $('html, body').animate({scrollTop: 0}, 1500, 'easeInOutExpo');
+        $('html, body').animate({ scrollTop: 0 }, 1500, 'easeInOutExpo');
         return false;
     });
 
-
-    // Facts counter
+    // Counter
     $('[data-toggle="counter-up"]').counterUp({
         delay: 10,
         time: 2000
     });
-
 
     // Modal Video
     $(document).ready(function () {
@@ -81,17 +76,15 @@
         $('.btn-play').click(function () {
             $videoSrc = $(this).data("src");
         });
-        console.log($videoSrc);
 
-        $('#videoModal').on('shown.bs.modal', function (e) {
-            $("#video").attr('src', $videoSrc + "?autoplay=1&amp;modestbranding=1&amp;showinfo=0");
-        })
+        $('#videoModal').on('shown.bs.modal', function () {
+            $("#video").attr('src', $videoSrc + "?autoplay=1&modestbranding=1&showinfo=0");
+        });
 
-        $('#videoModal').on('hide.bs.modal', function (e) {
+        $('#videoModal').on('hide.bs.modal', function () {
             $("#video").attr('src', $videoSrc);
-        })
+        });
     });
-
 
     // Testimonials carousel
     $(".testimonial-carousel").owlCarousel({
@@ -101,19 +94,45 @@
         margin: 24,
         dots: true,
         loop: true,
-        nav : false,
+        nav: false,
         responsive: {
-            0:{
-                items:1
-            },
-            768:{
-                items:2
-            },
-            992:{
-                items:3
-            }
+            0: { items: 1 },
+            768: { items: 2 },
+            992: { items: 3 }
         }
     });
-    
-})(jQuery);
 
+    // ==================================================
+    // 🔥 TABLE BOOKING → AZURE FUNCTION (IMPORTANT PART)
+    // ==================================================
+    $("#bookingForm").on("submit", function (e) {
+        e.preventDefault(); // stop reload
+
+        const bookingData = {
+            name: $("#name").val(),
+            email: $("#email").val(),
+            datetime: $("#datetime").val(),
+            people: $("#people").val(),
+            message: $("#message").val()
+        };
+
+        fetch("https://restaurant-booking-api.azurewebsites.net/api/bookTable", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(bookingData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert("✅ Table booked successfully!");
+            console.log("Booking saved:", data);
+            $("#bookingForm")[0].reset();
+        })
+        .catch(error => {
+            alert("❌ Booking failed. Check console.");
+            console.error(error);
+        });
+    });
+
+})(jQuery);
