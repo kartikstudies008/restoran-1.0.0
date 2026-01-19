@@ -68,7 +68,7 @@
                 <h5 class="text-primary">Reservation</h5>
                 <h1 class="text-white mb-4">Book A Table Online</h1>
 
-                <!-- IMPORTANT: IDs MUST MATCH -->
+                <!-- FORM (IDs MUST MATCH) -->
                 <form id="bookingForm">
                     <div class="row g-3">
 
@@ -143,24 +143,25 @@ document.getElementById("bookingForm").addEventListener("submit", async function
 
     try {
         const response = await fetch(
-            "https://restaurant-booking-api-cnasbbhmc4d9aja8.centralindia-01.azurewebsites.net/api/bookTable",
+            "https://restaurant-booking-api-cnasbbhmc4d9aja8.centralindia-01.azurewebsites.net/api/book_table",
             {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify(bookingData)
             }
         );
 
+        if (!response.ok) {
+            throw new Error("Backend error");
+        }
+
         const result = await response.json();
 
-        if (response.ok) {
-            alert("✅ Table booked successfully!");
-            document.getElementById("bookingForm").reset();
-            console.log("Saved:", result);
-        } else {
-            alert("❌ Backend error");
-            console.error(result);
-        }
+        alert("✅ Table booked successfully!");
+        console.log("Saved:", result);
+        document.getElementById("bookingForm").reset();
 
     } catch (error) {
         console.error(error);
