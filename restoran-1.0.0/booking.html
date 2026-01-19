@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <title>Restoran - Booking</title>
@@ -46,7 +45,6 @@
             <a href="booking.html" class="nav-item nav-link active">Booking</a>
             <a href="contact.html" class="nav-item nav-link">Contact</a>
         </div>
-
         <a href="booking.html" class="btn btn-primary py-2 px-4">Book A Table</a>
     </div>
 </nav>
@@ -70,19 +68,23 @@
                 <h5 class="text-primary">Reservation</h5>
                 <h1 class="text-white mb-4">Book A Table Online</h1>
 
+                <!-- IMPORTANT FORM -->
                 <form id="bookingForm">
                     <div class="row g-3">
 
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="name" placeholder="Your Name" required>
+                            <input type="text" class="form-control" id="name"
+                                   placeholder="Your Name" required>
                         </div>
 
                         <div class="col-md-6">
-                            <input type="email" class="form-control" id="email" placeholder="Your Email" required>
+                            <input type="email" class="form-control" id="email"
+                                   placeholder="Your Email" required>
                         </div>
 
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="datetime" placeholder="Date & Time" required>
+                            <input type="datetime-local" class="form-control"
+                                   id="datetime" required>
                         </div>
 
                         <div class="col-md-6">
@@ -96,7 +98,8 @@
                         </div>
 
                         <div class="col-12">
-                            <textarea class="form-control" id="message" placeholder="Special Request"></textarea>
+                            <textarea class="form-control" id="message"
+                                      placeholder="Special Request"></textarea>
                         </div>
 
                         <div class="col-12">
@@ -125,9 +128,9 @@
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- PHASE 2: FRONTEND → BACKEND -->
+<!-- 🔥 FRONTEND → AZURE FUNCTION -->
 <script>
-document.getElementById("bookingForm").addEventListener("submit", function (e) {
+document.getElementById("bookingForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const bookingData = {
@@ -138,23 +141,31 @@ document.getElementById("bookingForm").addEventListener("submit", function (e) {
         message: document.getElementById("message").value
     };
 
-    fetch("http://localhost:7071/api/bookTable", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(bookingData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert("✅ Table booked successfully!");
-        console.log("Backend response:", data);
-        document.getElementById("bookingForm").reset();
-    })
-    .catch(error => {
-        alert("❌ Booking failed. Backend not reachable.");
+    try {
+        const response = await fetch(
+            "https://restaurant-booking-api.azurewebsites.net/api/bookTable",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(bookingData)
+            }
+        );
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("✅ Table booked successfully!");
+            document.getElementById("bookingForm").reset();
+            console.log("Saved:", result);
+        } else {
+            alert("❌ Backend error");
+            console.error(result);
+        }
+
+    } catch (error) {
         console.error(error);
-    });
+        alert("❌ Cannot connect to backend");
+    }
 });
 </script>
 
