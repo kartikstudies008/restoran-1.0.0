@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Restoran - Booking</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="img/favicon.ico" rel="icon">
 
@@ -111,7 +111,7 @@
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- 🔥 BOOKING FORM SCRIPT -->
+<!-- ✅ FRONTEND → AZURE FUNCTION -->
 <script>
 document.getElementById("bookingForm").addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -126,10 +126,12 @@ document.getElementById("bookingForm").addEventListener("submit", async function
 
     try {
         const response = await fetch(
-            "https://restaurant-booking-api.azurewebsites.net/api/bookTable",
+            "https://restaurant-booking-api-cnasbbhmc4d9aja8.centralindia-01.azurewebsites.net/api/booktable",
             {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify(bookingData)
             }
         );
