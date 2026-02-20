@@ -84,13 +84,34 @@ async function updateStatus(id, status) {
 // ===== LOGOUT BUTTON =====
 document.addEventListener("DOMContentLoaded", () => {
 
-    // load bookings when page opens
-    loadBookings();
+    // Handle admin login form if present
+    const loginForm = document.getElementById("adminLoginForm");
+    if (loginForm) {
+        loginForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const email = document.getElementById("adminEmail").value;
+            const password = document.getElementById("adminPassword").value;
+            const errorDiv = document.getElementById("loginError");
+
+            if (email === "admin@restoran.com" && password === "admin123") {
+                // Successful login, redirect to dashboard
+                window.location.href = "admindashboard.html";
+            } else {
+                // Show error
+                errorDiv.classList.remove("d-none");
+            }
+        });
+    }
+
+    // load bookings when page opens (for dashboard)
+    if (document.getElementById("bookingTableBody")) {
+        loadBookings();
+    }
 
     const btnLogout = document.getElementById("btnLogout");
     if (btnLogout) {
         btnLogout.addEventListener("click", () => {
-            window.location.href = "admin-login.html";
+            window.location.href = "adminportal.html";
         });
     }
 });
