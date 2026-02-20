@@ -56,18 +56,15 @@
                     <div class="row g-3">
 
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="name"
-                                   placeholder="Your Name" required>
+                            <input type="text" class="form-control" id="name" placeholder="Your Name" required>
                         </div>
 
                         <div class="col-md-6">
-                            <input type="email" class="form-control" id="email"
-                                   placeholder="Your Email" required>
+                            <input type="email" class="form-control" id="email" placeholder="Your Email" required>
                         </div>
 
                         <div class="col-md-6">
-                            <input type="datetime-local" class="form-control"
-                                   id="datetime" required>
+                            <input type="datetime-local" class="form-control" id="datetime" required>
                         </div>
 
                         <div class="col-md-6">
@@ -81,8 +78,7 @@
                         </div>
 
                         <div class="col-12">
-                            <textarea class="form-control" id="message"
-                                      placeholder="Special Request"></textarea>
+                            <textarea class="form-control" id="message" placeholder="Special Request"></textarea>
                         </div>
 
                         <div class="col-12">
@@ -99,53 +95,61 @@
     </div>
 </div>
 
-<!-- FOOTER -->
-<div class="container-fluid bg-dark text-light footer pt-5 mt-5">
-    <div class="container text-center py-4">
-        &copy; Restoran. All Rights Reserved.
-    </div>
 </div>
 
-</div>
-
-<!-- JS -->
+<!-- JavaScript Libraries (REQUIRED FOR TEMPLATE) -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="lib/wow/wow.min.js"></script>
+<script src="lib/easing/easing.min.js"></script>
+<script src="lib/waypoints/waypoints.min.js"></script>
+<script src="lib/counterup/counterup.min.js"></script>
+<script src="lib/owlcarousel/owl.carousel.min.js"></script>
+<script src="lib/tempusdominus/js/moment.min.js"></script>
+<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
 
-<!-- ✅ STATIC WEB APP → AZURE FUNCTION -->
+<!-- Template JS -->
+<script src="js/main.js"></script>
+
+<!-- BOOKING BACKEND CONNECTION -->
 <script>
-document.getElementById("bookingForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
 
-    const bookingData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        datetime: document.getElementById("datetime").value,
-        people: document.getElementById("people").value,
-        message: document.getElementById("message").value
-    };
+    const form = document.getElementById("bookingForm");
+    if (!form) return;
 
-    try {
-        const response = await fetch("/api/booktable", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(bookingData)
-        });
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-        const result = await response.json();
+        const bookingData = {
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            datetime: document.getElementById("datetime").value,
+            people: document.getElementById("people").value,
+            message: document.getElementById("message").value
+        };
 
-        if (!response.ok) {
-            throw new Error(result.error || "Backend error");
+        try {
+            const response = await fetch("http://127.0.0.1:5000/book", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(bookingData)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) throw new Error(result.error);
+
+            alert("✅ Table booked successfully!");
+            form.reset();
+
+        } catch (error) {
+            console.error(error);
+            alert("❌ Backend not connected. Make sure Flask server is running.");
         }
+    });
 
-        alert("✅ Table booked successfully!");
-        document.getElementById("bookingForm").reset();
-
-    } catch (error) {
-        console.error(error);
-        alert("❌ Cannot connect to backend");
-    }
 });
 </script>
 
