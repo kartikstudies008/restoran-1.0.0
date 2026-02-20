@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Restoran - Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="img/favicon.ico" rel="icon">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+<div class="container-xxl bg-white p-0">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-3 py-lg-0">
+    <a href="index.html" class="navbar-brand p-0">
+        <h1 class="text-primary m-0">
+            <i class="fa fa-utensils me-3"></i>Restoran
+        </h1>
+    </a>
+</nav>
+
+<div class="container-xxl py-5 bg-dark hero-header mb-5">
+    <div class="container text-center my-5 pt-5 pb-4">
+        <h1 class="display-3 text-white mb-3">Customer Registration</h1>
+    </div>
+</div>
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 bg-dark p-5 rounded">
+                <h2 class="text-white mb-4 text-center">Create Account</h2>
+
+                <form id="registerForm">
+                    <input type="text" class="form-control mb-3" id="name" placeholder="Full Name" required>
+                    <input type="email" class="form-control mb-3" id="email" placeholder="Email Address" required>
+                    <input type="password" class="form-control mb-3" id="password" placeholder="Password" required>
+                    <input type="password" class="form-control mb-3" id="confirmPassword" placeholder="Confirm Password" required>
+
+                    <button class="btn btn-primary w-100 py-2" type="submit">Register</button>
+                </form>
+
+                <p class="text-center text-light mt-3">
+                    Already have an account?
+                    <a href="customerlogin.html" class="text-primary">Login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirmPassword").value;
+
+    if(password !== confirm){
+        alert("Passwords do not match!");
+        return;
+    }
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    const exists = users.find(user => user.email === email);
+    if(exists){
+        alert("Email already registered. Please login.");
+        return;
+    }
+
+    users.push({
+        name: name,
+        email: email,
+        password: password,
+        role: "customer"
+    });
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Registration Successful! Please Login.");
+    window.location.href = "customerlogin.html";
+});
+</script>
+
+</body>
+</html>
